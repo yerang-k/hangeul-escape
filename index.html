@@ -70,6 +70,18 @@
   .replies{display:flex;flex-direction:column;gap:8px;margin-top:12px}
   .reply{text-align:left;font:inherit;color:var(--ink);background:#1d150c;border:1px solid #4a381f;border-radius:14px;padding:12px 14px;cursor:pointer}
   .reply:hover{border-color:var(--gold)}
+  .vn{display:flex;flex-direction:column;gap:8px}
+  .cast{display:flex;justify-content:space-between;align-items:flex-end;padding:2px 8px 0}
+  .por{display:flex;flex-direction:column;align-items:center;gap:3px;opacity:.4;filter:grayscale(.6);transition:.28s}
+  .por.on{opacity:1;filter:none;transform:translateY(-3px)}
+  .por .ava{width:54px;height:54px;border-radius:14px;display:grid;place-items:center;font-size:1.9rem;background:#1d150c;border:2px solid var(--gold-dim)}
+  .por.on .ava{border-color:var(--gold);box-shadow:0 0 16px #e0b35766}
+  .por span{font-size:.72rem;color:var(--ink-dim);max-width:84px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .por.on span{color:var(--gold)}
+  .tag2{text-align:center;color:var(--gold);font-size:.76rem;letter-spacing:.1em;opacity:.85}
+  .bub{position:relative}
+  .bub.npc::after,.bub.no::after{content:"◂";position:absolute;left:-9px;top:12px;color:#33261a;font-size:1.1rem}
+  .bub.me::after{content:"▸";position:absolute;right:-9px;top:12px;color:#3c5a3c;font-size:1.1rem}
   #fade{position:fixed;inset:0;z-index:65;background:#0d0805;display:flex;align-items:center;justify-content:center;
     flex-direction:column;gap:10px;opacity:0;pointer-events:none;transition:opacity .6s;text-align:center;padding:24px}
   #fade.on{opacity:1;pointer-events:all}
@@ -747,7 +759,7 @@ window.__hero=hero;
 
 /* ==================== 퍼즐/금고/승리 (DOM) ==================== */
 const norm=s=>(s||'').replace(/\s/g,'').replace(/[.,!?·()]/g,'').toLowerCase();
-function closeOverlay(){$('#overlay').style.display='none';S.paused=false;}
+function closeOverlay(){clearInterval(window.__tt);$('#overlay').style.display='none';S.paused=false;}
 window.closeOverlay=closeOverlay;
 function openStation(st){
   S.paused=true;
@@ -761,40 +773,53 @@ function flashModal(k,html){$('#modal').innerHTML=`<div class="k">${k}</div><div
 /* ---- NPC 대화형 퀴즈 ---- */
 let chatStation=null, chatBubbles=[], chatOrder=null, chatSolved=false;
 function esc(s){return String(s).replace(/</g,'&lt;');}
-function rewardText(st){ if(st.reward&&st.reward.slot!==undefined)return `금고의 ‘${['천','백','십','일'][st.reward.slot]}의 자리’는 <b>${st.reward.val}</b>.`;
-  if(st.reward&&st.reward.item)return `<b>${st.reward.item}</b>을(를) 그대에게 주지.`; return ''; }
+function rewardText(st){ if(st.reward&&st.reward.slot!==undefined)return `금고의 ‘${['천','백','십','일'][st.reward.slot]}의 자리’는 ${st.reward.val}!`;
+  if(st.reward&&st.reward.item)return `${st.reward.item}을(를) 그대에게 주지.`; return ''; }
 function applyReward(st){ if(st.reward&&st.reward.slot!==undefined)S.digits[st.reward.slot]=st.reward.val;
   else if(st.reward&&st.reward.item&&!S.items.includes(st.reward.item))S.items.push(st.reward.item); renderHUD(); }
 function hintRow(){return `<div class="row-btns"><button class="hlink" onclick="npcHint()">힌트 청하기</button><button class="btn ghost" onclick="closeOverlay()">나가기</button></div>`;}
+/* 한 글자씩 타이핑 → 참여자가 순서대로 읽게 함 (다 나올 때까지 보기·입력 잠금) */
+function typeBubble(el,text,cb){ let i=0; el.textContent=''; clearInterval(window.__tt);
+  window.__tt=setInterval(()=>{ el.textContent=text.slice(0,++i); const bb=$('#bubs'); if(bb)bb.scrollTop=bb.scrollHeight;
+    if(i>=text.length){clearInterval(window.__tt); cb&&cb();} }, 26); }
 function drawChat(){
   const st=chatStation, n=CUR().npc||{name:'지킴이',face:'📜'};
+  const last=chatBubbles.length-1;
+  const toType=(last>=0 && chatBubbles[last].c!=='me' && !chatBubbles[last].done)?last:-1;
+  const typing=toType>=0;
+  const activeMe=!typing && !chatSolved && st.type!=='info';
+  const shirtHex='#'+(player.shirt>>>0).toString(16).padStart(6,'0');
+  const cast=`<div class="cast">
+    <div class="por npc ${typing||chatSolved?'on':''}"><div class="ava">${n.face}</div><span>${n.name}</span></div>
+    <div class="por me ${activeMe?'on':''}"><div class="ava" style="background:${shirtHex}">🙂</div><span>${esc(player.name)}</span></div></div>`;
+  const bubbleHTML=chatBubbles.map((b,i)=>`<div class="bub ${b.c}">${i===toType?'':esc(b.t)}</div>`).join('');
   let foot='';
   if(chatSolved) foot=`<div class="row-btns"><span></span><button class="btn" onclick="closeOverlay()">물러난다</button></div>`;
   else if(st.type==='info') foot=`<div class="row-btns"><span></span><button class="btn" onclick="finishInfo('${st.id}')">알겠다</button></div>`;
   else if(st.type==='choice') foot=`<div class="replies">${chatOrder.map((oi,pos)=>`<button class="reply" onclick="tryChoice('${st.id}',${oi})">${'①②③④'[pos]} ${esc(st.opts[oi])}</button>`).join('')}</div>`+hintRow();
   else foot=`<div class="textrow"><input type="text" id="ans" placeholder="답을 적어 보내기" autocomplete="off"><button class="btn" onclick="tryText('${st.id}')">보내기</button></div>`+hintRow();
-  $('#modal').innerHTML=`<div class="chat">
-    <div class="who"><div class="face">${n.face}</div>${n.name} · ${st.k}</div>
-    <div class="bubbles" id="bubs">${chatBubbles.map(b=>`<div class="bub ${b.c}">${b.t}</div>`).join('')}</div>
-    ${foot}</div>`;
+  $('#modal').innerHTML=`<div class="vn">${cast}<div class="tag2">${st.k}</div>
+    <div class="bubbles" id="bubs">${bubbleHTML}</div>
+    <div id="chatfoot"${typing?' style="visibility:hidden"':''}>${foot}</div></div>`;
   const bb=$('#bubs'); if(bb)bb.scrollTop=bb.scrollHeight;
-  const inp=$('#ans'); if(inp){inp.focus();inp.addEventListener('keydown',e=>{if(e.key==='Enter')tryText(st.id);});}
+  if(typing){ typeBubble($('#bubs').children[toType], chatBubbles[toType].t, ()=>{chatBubbles[toType].done=true;drawChat();}); }
+  else { const inp=$('#ans'); if(inp){inp.focus();inp.addEventListener('keydown',e=>{if(e.key==='Enter')tryText(st.id);});} }
 }
-function startChat(st){ S.paused=true; chatStation=st; chatSolved=false; chatBubbles=[{c:'npc',t:esc(st.q)}];
+function startChat(st){ S.paused=true; chatStation=st; chatSolved=false; chatBubbles=[{c:'npc',t:st.q}];
   if(st.type==='choice'){ chatOrder=st.opts.map((_,k)=>k);
     for(let a=chatOrder.length-1;a>0;a--){const b=Math.floor(Math.random()*(a+1));[chatOrder[a],chatOrder[b]]=[chatOrder[b],chatOrder[a]];} }
   drawChat(); $('#overlay').style.display='flex'; }
 function openInfo(st){ startChat(st); }
 function openPuzzle(st){ startChat(st); }
 window.finishInfo=id=>{markDone(id);closeOverlay();};
-window.npcHint=()=>{ chatBubbles.push({c:'npc',t:'💡 '+esc(chatStation.hint||'…')}); drawChat(); };
+window.npcHint=()=>{ chatBubbles.push({c:'npc',t:'💡 '+(chatStation.hint||'…')}); drawChat(); };
 function winReply(st){ chatSolved=true; chatBubbles.push({c:'npc',t:'철컥 — 훌륭하다! '+rewardText(st)}); applyReward(st); drawChat(); markDone(st.id); }
 window.tryChoice=(id,k)=>{const st=stById(id); if(chatSolved)return;
-  chatBubbles.push({c:'me',t:esc(st.opts[k])});
+  chatBubbles.push({c:'me',t:st.opts[k]});
   if(k===st.answer) winReply(st);
   else { chatBubbles.push({c:'no',t:'아니야, 다시 헤아려 보게.'}); drawChat(); } };
 window.tryText=id=>{const st=stById(id); if(chatSolved)return; const v=($('#ans')?$('#ans').value:'');
-  if(!v.trim())return; chatBubbles.push({c:'me',t:esc(v)});
+  if(!v.trim())return; chatBubbles.push({c:'me',t:v});
   if(st.accept.map(norm).includes(norm(v))) winReply(st);
   else { chatBubbles.push({c:'no',t:'그 답이 아니네. 한 번 더.'}); drawChat(); } };
 function markDone(id){S.done[id]=true;const st=stById(id);if(st&&st.marker)st.marker.visible=false;}
