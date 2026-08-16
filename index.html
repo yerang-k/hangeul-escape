@@ -588,7 +588,7 @@ function buildRoom(i){
     g.position.set(st.x,0,z); g.userData.stationId=st.id; roomGroup.add(g); st.group=g; st._z=z;
     if(st.build==='door'){                                  // 문 위 '다음 방으로' 표지
       const lbl=(i>=ROOMS.length-1)?'최종 탈출':'다음 방으로';
-      const sign=textSprite(lbl,'#ffe6a8'); sign.scale.set(5.4,2,1); sign.position.set(st.x,7.4,z-0.2);
+      const sign=textSprite(lbl,'#ffe6a8'); sign.scale.set(4.4,1.63,1); sign.position.set(st.x,7.4,z-0.2);
       roomGroup.add(sign);
     }
   });
