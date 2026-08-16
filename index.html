@@ -169,9 +169,7 @@
   <h1>밀실의 문 앞에서</h1>
   <input class="fld" id="nameIn" maxlength="8" placeholder="이름 (최대 8자)">
   <div class="swatches" id="swatches"></div>
-  <input class="fld" id="sessionIn" maxlength="16" placeholder="게임 코드 (같은 반은 같게, 선택)">
   <button class="btn" id="toIntro" style="margin-top:6px;font-size:1.1rem;padding:12px 26px">확인</button>
-  <p class="fine" style="margin-top:10px">여럿이 함께 하려면 같은 게임 코드를 입력 (멀티 설정 시)</p>
 </div></div>
 
 <!-- 인트로 -->
@@ -300,30 +298,30 @@ const ROOMS = [
     code:"1009",  // 한글날 = 10월 9일
     theme:{floor:0x3f4d6b,wall:0xe7e0cd,accent:0xc0392b,bg:0x090d16,fog:0x090d16},
     stations:[
-      {id:'a4',build:'desk',x:-10,z:-8,color:0x4a5a7a,name:'기념 서안',k:'가갸날',
-        q:"한글날의 첫 이름이다.\n\n1926년 조선어연구회가 훈민정음 반포를 기려 처음 정한 이 날의 옛 이름은?\n(한글을 '가갸거겨'로 배운 데서 유래)",
-        type:'choice',opts:['가갸날','한글날','정음절','국문일'],answer:0,
-        hint:"'가갸거겨…'로 글자를 익히던 데서 온 이름.",reward:{slot:0,val:'1'}},
-      {id:'b4',build:'scroll',x:0,z:-15.2,color:0xeef0f4,name:'선언 족자',k:'이름의 유래',
-        q:"1928년, '가갸날'은 오늘날의 이름으로 바뀌었다.\n\n주시경 선생 등이 널리 퍼뜨린 어떤 말 덕분에 '○○날'이 되었나?",
-        type:'choice',opts:['한글','국문','언문','정음'],answer:0,
-        hint:"'하나뿐인 큰 글'이라는 뜻으로 주시경이 다듬은 말.",reward:{slot:1,val:'0'}},
-      {id:'c4',build:'chest',x:11,z:-6,color:0x5a4a3a,name:'간송의 궤',k:'해례본 발굴',
-        q:"1940년 경북 안동에서 발굴되어 간송 전형필이 지켜낸,\n한글의 창제 원리와 반포 시기를 밝힌 책은? (국보)",
+      {id:'a4',build:'desk',x:-10,z:-8,color:0x4a5a7a,name:'기념 서안',k:'첫 기념일',
+        q:"1926년, 조선어연구회가 훈민정음 반포를 기념해\n처음으로 제정한 기념일의 이름은?",
+        type:'choice',opts:['가갸날','한글날','국문절','정음일'],answer:0,
+        hint:"한글을 '가갸거겨…'로 익히던 데서 온 이름.",reward:{slot:0,val:'1'}},
+      {id:'b4',build:'scroll',x:0,z:-15.2,color:0xeef0f4,name:'선언 족자',k:'한글의 이름',
+        q:"우리 글자를 이르는 '한글'이라는 이름을 다듬어\n널리 퍼뜨린 국어학자는 누구인가?",
+        type:'choice',opts:['주시경','세종','최현배','정약용'],answer:0,
+        hint:"국어 문법의 기틀을 세운 한힌샘 선생.",reward:{slot:1,val:'0'}},
+      {id:'c4',build:'chest',x:11,z:-6,color:0x5a4a3a,name:'간송의 궤',k:'국보의 발굴',
+        q:"1940년 경북 안동에서 발견되어 간송 전형필이 지켜낸,\n한글의 창제 원리를 담은 국보는? (책 이름)",
         type:'text',accept:['훈민정음해례본','해례본','훈민정음해례','훈민정음 해례본'],
         hint:"'훈민정음'의 풀이(解例)를 담은 책.",reward:{slot:2,val:'0'}},
-      {id:'d4',build:'drawer',x:9,z:9,color:0x556677,name:'환산표 서랍',k:'시월 구일',
-        q:"《해례본》 정인지 서문 '정통 11년 9월 상한(上旬)'을 근거로,\n음력 9월 10일을 양력으로 환산해 확정한 오늘날의 한글날은?",
-        type:'choice',opts:['10월 9일','10월 28일','10월 29일','11월 4일'],answer:0,
-        hint:"나머지 셋은 예전에 쓰다가 바뀐 날짜다.",reward:{slot:3,val:'9'}},
-      {id:'e4',build:'jar',x:-13,z:2,color:0x4a5a7a,name:'서문 항아리',k:'상한(上旬)',
-        q:"정인지 서문의 '상한(上旬)'은 한 달을 열흘씩 셋으로 나눈 첫머리를 뜻한다.\n\n며칠까지를 이르는가?",
-        type:'choice',opts:['1일~10일','1일~15일','11일~20일','21일~그믐'],answer:0,
-        hint:"상순=초순=첫 열흘.",reward:{item:'📜 정인지 서문'}},
-      {id:'f4',build:'chest',x:13,z:2,color:0x6a3a3a,name:'봉인된 연대기',k:'날짜의 변천',lock:'📜 정인지 서문',
-        q:"서문을 펼치자 마지막 문제가 드러난다.\n\n한글날 날짜가 바뀐 차례로 옳은 것은?",
-        type:'choice',opts:['11월 4일 → 10월 29일 → 10월 28일 → 10월 9일','10월 9일 → 10월 28일 → 11월 4일 → 10월 29일','10월 28일 → 11월 4일 → 10월 9일 → 10월 29일','11월 4일 → 10월 9일 → 10월 28일 → 10월 29일'],answer:0,
-        hint:"가갸날(11/4) → 율리우스력(10/29) → 그레고리력(10/28) → 해례본 근거(10/9).",reward:{item:'🗝️ 반포문 열쇠'}},
+      {id:'d4',build:'drawer',x:9,z:9,color:0x556677,name:'글자 서랍',k:'스물여덟 자',
+        q:"세종이 훈민정음을 처음 만들었을 때,\n글자는 모두 몇 자였을까?",
+        type:'choice',opts:['28자','24자','40자','14자'],answer:0,
+        hint:"자음 17자 + 모음 11자. 오늘날은 24자를 쓴다.",reward:{slot:3,val:'9'}},
+      {id:'e4',build:'jar',x:-13,z:2,color:0x4a5a7a,name:'달력 항아리',k:'상순(上旬)',
+        q:"한 달을 열흘씩 셋으로 나눌 때,\n'상순(上旬)'은 며칠까지를 이르는가?",
+        type:'choice',opts:['1일~10일','1일~15일','11일~20일','21일~말일'],answer:0,
+        hint:"상순 = 초순 = 그 달의 첫 열흘.",reward:{item:'📜 정인지 서문'}},
+      {id:'f4',build:'chest',x:13,z:2,color:0x6a3a3a,name:'봉인된 연대기',k:'한글날의 뜻',lock:'📜 정인지 서문',
+        q:"서문을 펼치자 마지막 문제가 드러난다.\n\n한글날은 세종이 훈민정음을 백성에게 ○○한 것을\n기념하는 날이다. ○○에 들어갈 말은?",
+        type:'choice',opts:['반포(펴냄)','창제(만듦)','수정(고침)','편찬(엮음)'],answer:0,
+        hint:"'만든' 것(창제, 1443)이 아니라 '널리 펴낸' 것(1446)을 기린다.",reward:{item:'🗝️ 반포문 열쇠'}},
       {id:'l4',build:'lamp',x:0,z:2,color:0xffd98a,name:'기념 등',k:'등불의 글귀',
         q:"벽에 마지막 글귀가 드러난다.\n\n“이 방의 네 수는 온 겨레가 한글을 기리는 날,\n시월 구일(十月 九日)로 이어 읽으라.”",
         type:'info',hint:"한글날의 날짜, 10·9.",reward:null},
@@ -355,7 +353,6 @@ const stById=id=>CUR().stations.find(s=>s.id===id);
     sw.appendChild(d);});
   $('#toIntro').onclick=()=>{
     player.name=($('#nameIn').value.trim()||'탐험가').slice(0,8);
-    player.session=$('#sessionIn').value.trim();
     $('#setup').style.display='none'; $('#intro').style.display='flex';
   };
 })();
