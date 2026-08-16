@@ -781,7 +781,7 @@ function hintRow(){return `<div class="row-btns"><button class="hlink" onclick="
 /* 한 글자씩 타이핑 → 참여자가 순서대로 읽게 함 (다 나올 때까지 보기·입력 잠금) */
 function typeBubble(el,text,cb){ let i=0; el.textContent=''; clearInterval(window.__tt);
   window.__tt=setInterval(()=>{ el.textContent=text.slice(0,++i); const bb=$('#bubs'); if(bb)bb.scrollTop=bb.scrollHeight;
-    if(i>=text.length){clearInterval(window.__tt); cb&&cb();} }, 26); }
+    if(i>=text.length){clearInterval(window.__tt); cb&&cb();} }, 55); }
 function drawChat(){
   const st=chatStation, n=CUR().npc||{name:'지킴이',face:'📜'};
   const last=chatBubbles.length-1;
