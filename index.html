@@ -887,6 +887,7 @@ function animate(){
     const fx=Math.sin(camYaw), fz=Math.cos(camYaw);
     const dist=5.6, camH=3.7, look=9, lookH=2.4;
     camTmp.set(hero.position.x-fx*dist, camH, hero.position.z-fz*dist);
+    const cl=ROOM-0.8; camTmp.x=Math.max(-cl,Math.min(cl,camTmp.x)); camTmp.z=Math.max(-cl,Math.min(cl,camTmp.z)); // 카메라를 방 안에 가둠(벽 밖으로 안 나가게)
     camera.position.lerp(camTmp,Math.min(1,dt*6));
     camera.lookAt(hero.position.x+fx*look, lookH, hero.position.z+fz*look); }
   if(dustField)dustField.rotation.y+=dt*0.04;
