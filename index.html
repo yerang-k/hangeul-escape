@@ -284,6 +284,8 @@ const ROOMS = [
       {id:'l1',build:'lamp',x:-11,z:5,color:0xe0b357,name:'등잔',k:'등불의 글귀',
         q:"불을 붙이자 벽에 글귀가 드러난다.\n\n“이 방은 훈민정음이 창제된 것을 기린다.\n네가 찾아낸 네 숫자를 천·백·십·일 순서로 금고에 넣어라.”",
         type:'info',hint:"각 문제에서 얻은 네 숫자를 순서대로.",reward:null},
+      {id:'npc1',build:'npc',x:-3,z:6,color:0x2f5d8a,name:'집현전 학사',k:'대화',type:'info',
+        q:"나는 집현전 학사일세. 이 방은 세종께서 새 글자를 지으신 곳이지.\n\n가구를 하나하나 살펴 금고의 네 숫자를 모으게.\n잠긴 궤는 다른 데서 얻은 물건이 있어야 열린다네.",reward:null},
       {id:'door1',build:'door',x:0,z:15.2,color:0x53381f,name:'금고문',k:'제1 관문',type:'safe',lock:'🗝️ 서고 열쇠',reward:null}
     ]},
   { name:"제2방 · 규범의 방", concept:"바른 말을 가려내는 차가운 검사실",
@@ -318,6 +320,8 @@ const ROOMS = [
       {id:'l2',build:'lamp',x:3,z:-10,color:0x8fd0ff,name:'등불',k:'등불의 글귀',
         q:"벽에 글귀가 드러난다.\n\n“이 방은 훈민정음이 반포된 것을 기린다.\n네가 찾아낸 네 숫자를 천·백·십·일 순서로 금고에 넣어라.”",
         type:'info',hint:"각 문제에서 얻은 네 숫자를 순서대로.",reward:null},
+      {id:'npc2',build:'npc',x:2,z:8,color:0x556677,name:'어문 규범관',k:'대화',type:'info',
+        q:"어문 규범관일세. 여기선 바른 말과 표기를 가린다네.\n\n항아리에서 ‘교정 도장’을 얻으면,\n봉인된 서류함이 열릴 걸세.",reward:null},
       {id:'door2',build:'door',x:0,z:15.2,color:0x2f3d49,name:'금고문',k:'제2 관문',type:'safe',lock:'🗝️ 검사실 열쇠',reward:null}
     ]},
   { name:"제3방 · 우리말 보물의 방", concept:"옛말과 순우리말이 잠든 황금 보고",
@@ -352,6 +356,8 @@ const ROOMS = [
       {id:'l3',build:'lamp',x:1,z:-1,color:0xe0b357,name:'등룡',k:'등불의 글귀',
         q:"벽에 마지막 글귀.\n\n“이 방은 훈민정음이 유네스코 세계기록유산에\n오른 것을 기린다.\n네 숫자를 천·백·십·일 순서로 금고에 넣어라.”",
         type:'info',hint:"각 문제에서 얻은 네 숫자를 순서대로.",reward:null},
+      {id:'npc3',build:'npc',x:0,z:6,color:0x3a6a4a,name:'보물 지킴이',k:'대화',type:'info',
+        q:"보물 지킴이라 하네. 옛말과 순우리말이 잠든 방이지.\n\n‘청동 열쇠’를 손에 넣어야\n잠긴 보물궤를 열 수 있다네.",reward:null},
       {id:'door3',build:'door',x:0,z:15.2,color:0x3a2a10,name:'금고문',k:'제3 관문',type:'safe',lock:'🗝️ 보고 열쇠',reward:null}
     ]},
   { name:"제4방 · 한글날의 탄생", concept:"가갸날에서 시월 구일까지, 한글날이 세워진 길",
@@ -386,6 +392,8 @@ const ROOMS = [
       {id:'l4',build:'lamp',x:0,z:2,color:0xffd98a,name:'기념 등',k:'등불의 글귀',
         q:"벽에 마지막 글귀가 드러난다.\n\n“이 방은 온 겨레가 한글을 기리는 ‘한글날’의 방이다.\n네가 찾아낸 네 숫자를 천·백·십·일 순서로 금고에 넣어라.”",
         type:'info',hint:"각 문제에서 얻은 네 숫자를 순서대로.",reward:null},
+      {id:'npc4',build:'npc',x:0,z:9,color:0x8a3b3b,name:'한글 지킴이',k:'대화',type:'info',
+        q:"한글 지킴이일세. 가갸날에서 시월 구일까지,\n한글날의 내력이 이 방에 있지.\n\n‘정인지 서문’을 얻어야\n봉인된 연대기가 열린다네.",reward:null},
       {id:'door4',build:'door',x:0,z:15.2,color:0x2a3550,name:'최후의 금고문',k:'최종 관문',type:'safe',lock:'🗝️ 반포문 열쇠',reward:null}
     ]}
 ];
@@ -658,6 +666,26 @@ function furniture(kind,c){
   return g;
 }
 
+/* ---- NPC(서 있는 선비 인물) ---- */
+function buildNPC(robe){
+  const g=new THREE.Group();
+  const p=(w,h,d,c,x,y,z)=>{const b=box(w,h,d,c);b.position.set(x,y,z);g.add(b);return b;};
+  const skin=0xf1c9a0, HAT=0x1a1a20, BEARD=0x33261a;
+  p(1.7,2.6,1.0,robe,0,1.6,0);                 // 도포
+  p(1.8,0.24,1.05,0xe0c060,0,0.42,0);          // 밑단 금띠
+  p(0.45,1.9,0.16,0x2a4a6a,0,1.9,0.5);         // 앞섶 띠
+  p(0.5,1.7,0.55,robe,-1.02,2.0,0);            // 소매
+  p(0.5,1.7,0.55,robe,1.02,2.0,0);
+  p(1.0,1.0,1.0,skin,0,3.55,0);                // 머리
+  p(0.14,0.2,0.06,0x241a12,-0.22,3.62,0.5);    // 눈
+  p(0.14,0.2,0.06,0x241a12,0.22,3.62,0.5);
+  p(0.4,0.1,0.06,BEARD,0,3.42,0.5);            // 콧수염
+  p(0.55,0.6,0.18,BEARD,0,3.05,0.42);          // 턱수염
+  const brim=cyl(1.4,1.4,0.12,HAT); brim.position.set(0,4.12,0); g.add(brim);   // 갓 챙
+  const crown=cyl(0.52,0.62,0.95,HAT); crown.position.set(0,4.6,0); g.add(crown); // 갓 대우
+  g.scale.setScalar(0.62);
+  return g;
+}
 /* ---- 디테일 소품 빌더 ---- */
 let __lightBudget=0;
 function eMat(c,i){return new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:i||0.8,roughness:0.6,metalness:0});}
@@ -814,8 +842,9 @@ function buildRoom(i){
   decorate(t,i);
 
   R.stations.forEach(st=>{
-    const g=furniture(st.build,st.color);
+    const g = st.build==='npc' ? buildNPC(st.color) : furniture(st.build,st.color);
     let z=st.z; if(st.build==='scroll')z=-ROOM+0.9; if(st.build==='door')z=ROOM-0.4;
+    if(st.build==='npc') g.rotation.y=Math.PI;   // 방 안쪽(플레이어)을 바라보게
     g.position.set(st.x,0,z); g.userData.stationId=st.id; roomGroup.add(g); st.group=g; st._z=z;
     if(FOOT[st.build]) addBlock(st.x,z,FOOT[st.build][0],FOOT[st.build][1]);
     if(st.build==='door'){                                  // 문 위 '다음 방으로' 표지
@@ -977,7 +1006,7 @@ function animate(){
   });
   S.near=near;
   const act=$('#act');
-  if(near&&!S.paused){act.style.display='block';act.textContent=(near.type==='safe'?'🔐 금고 열기':(IS_TOUCH?'🔍 조사하기':'🔍 조사하기 (E)'));}
+  if(near&&!S.paused){act.style.display='block';act.textContent=(near.build==='npc'?'💬 말 걸기':(near.type==='safe'?'🔐 금고 열기':(IS_TOUCH?'🔍 조사하기':'🔍 조사하기 (E)')));}
   else act.style.display='none';
   // 멀티
   net.acc+=dt; if(net.acc>0.12){net.acc=0;netPublish();}
