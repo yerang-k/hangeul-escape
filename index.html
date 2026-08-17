@@ -542,15 +542,15 @@ $('#startBtn').onclick=()=>{ personalize(); $('#intro').style.display='none'; if
 function start3D(){
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(62,innerWidth/innerHeight,0.1,300);
-const renderer=new THREE.WebGLRenderer({antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+const renderer=new THREE.WebGLRenderer({antialias:!IS_TOUCH, powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio, IS_TOUCH?1.5:2)); // 폰은 해상도 낮춰 성능↑
 renderer.setSize(innerWidth,innerHeight);
-renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFShadowMap;
 document.body.appendChild(renderer.domElement);
 
 const hemi=new THREE.HemisphereLight(0xffffff,0x30241a,0.8); scene.add(hemi);
 const sun=new THREE.DirectionalLight(0xffffff,0.95); sun.position.set(12,22,8); sun.castShadow=true;
-sun.shadow.mapSize.set(1024,1024);
+sun.shadow.mapSize.set(IS_TOUCH?512:1024, IS_TOUCH?512:1024);
 Object.assign(sun.shadow.camera,{left:-26,right:26,top:26,bottom:-26,near:1,far:70});
 scene.add(sun);
 
