@@ -510,10 +510,12 @@ GRAIN.__keep=true;
 // 벽지: 한글 자모 + 격자무늬
 function wallTex(base){return makeTex((cx,s)=>{
   cx.fillStyle=hx(base);cx.fillRect(0,0,s,s);
-  cx.strokeStyle='rgba(0,0,0,0.10)';cx.lineWidth=2;
+  const lum=((base>>16&255)*0.299+(base>>8&255)*0.587+(base&255)*0.114)/255; // 벽 밝기
+  const ink=lum>0.5?'0,0,0':'255,255,255';                                   // 밝은 벽→검은 글자, 어두운 벽→흰 글자
+  cx.strokeStyle='rgba('+ink+',0.13)';cx.lineWidth=2;
   for(let i=0;i<=4;i++){const p=i*s/4;cx.beginPath();cx.moveTo(p,0);cx.lineTo(p,s);cx.moveTo(0,p);cx.lineTo(s,p);cx.stroke();}
   const g=['ㄱ','ㄴ','ㄷ','ㅁ','ㅅ','ㅇ','ㅈ','ㅎ','ㅏ','ㅗ','ㅜ','ㅣ','ㅂ','ㅌ','ㅍ','ㄹ'];
-  cx.fillStyle='rgba(255,255,255,0.13)';cx.font='bold 30px "Noto Serif KR",serif';cx.textAlign='center';cx.textBaseline='middle';
+  cx.fillStyle='rgba('+ink+',0.24)';cx.font='bold 34px "Noto Serif KR",serif';cx.textAlign='center';cx.textBaseline='middle';
   let k=0;for(let r=0;r<4;r++)for(let c=0;c<4;c++)cx.fillText(g[(k++)%g.length],c*s/4+s/8,r*s/4+s/8);
 },256);}
 // 마룻바닥: 널결
