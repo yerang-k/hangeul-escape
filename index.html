@@ -210,10 +210,10 @@
       <ellipse cx="115" cy="101" rx="4.5" ry="5.5" fill="#241a12"/>
       <!-- 코 -->
       <path d="M100 103 l-5 17 l10 0 z" fill="#e6b382"/>
-      <!-- 수염(턱·볼선을 따라 얼굴에 붙게) -->
-      <path d="M67 110 Q70 150 100 167 Q130 150 133 110 Q118 133 100 134 Q82 133 67 110 Z" fill="#37271a"/>
+      <!-- 수염(턱에 맞춰 작고 단정하게) -->
+      <path d="M76 117 Q80 143 100 152 Q120 143 124 117 Q112 130 100 131 Q88 130 76 117 Z" fill="#3a2a1a"/>
       <!-- 콧수염 -->
-      <path d="M82 120 Q100 129 118 120 Q108 127 100 127 Q92 127 82 120 Z" fill="#2e2016"/>
+      <path d="M85 121 Q100 128 115 121 Q107 126 100 126 Q93 126 85 121 Z" fill="#2e2016"/>
       <!-- 익선관(검은 관모) -->
       <path d="M59 74 Q59 40 100 40 Q141 40 141 74 Z" fill="#191922"/>
       <rect x="57" y="70" width="86" height="12" rx="6" fill="#0f0f16"/>
@@ -828,7 +828,7 @@ function buildRoom(i){
 }
 
 /* 주인공 */
-const hero=buildAvatar(player.shirt,player.name); hero.scale.setScalar(0.7); scene.add(hero);
+const hero=buildAvatar(player.shirt,player.name); hero.scale.setScalar(0.6); scene.add(hero);
 buildRoom(0);
 
 /* 입력 */
@@ -904,7 +904,7 @@ function netUpdate(dt){
     if(d.r!==progress.room){ if(net.avatars[pid]){scene.remove(net.avatars[pid]);delete net.avatars[pid];} continue; }
     seen[pid]=1;
     let a=net.avatars[pid];
-    if(!a){ a=buildAvatar(d.c||0x888888,d.n||'?'); a.scale.setScalar(0.7); scene.add(a); a.userData.tp=new THREE.Vector3(d.x,0,d.z); net.avatars[pid]=a; }
+    if(!a){ a=buildAvatar(d.c||0x888888,d.n||'?'); a.scale.setScalar(0.6); scene.add(a); a.userData.tp=new THREE.Vector3(d.x,0,d.z); net.avatars[pid]=a; }
     a.userData.tp.set(d.x,0,d.z);
     a.position.lerp(a.userData.tp,Math.min(1,dt*6));
   }
