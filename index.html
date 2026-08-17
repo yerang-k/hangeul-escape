@@ -546,20 +546,35 @@ function marker(){const s=textSprite('?','#e0b357');s.scale.set(1.8,1.8,1);retur
 function buildAvatar(shirt,name,skin){
   skin=skin||0xf4c48c; const g=new THREE.Group();
   const p=(w,h,d,c,x,y,z)=>{const b=box(w,h,d,c);b.position.set(x,y,z);return b;};
-  g.add(p(1.4,1.6,0.8,shirt,0,2.2,0));
-  g.add(p(1.0,1.0,1.0,skin,0,3.5,0));
-  // 얼굴(앞=+z) : 눈·입 / 머리카락(위·뒤)로 앞뒤 구분
-  g.add(p(0.18,0.24,0.08,0x241a12,-0.23,3.6,0.5));
-  g.add(p(0.18,0.24,0.08,0x241a12,0.23,3.6,0.5));
-  g.add(p(0.44,0.08,0.06,0x7a3b2e,0,3.24,0.5));
-  g.add(p(1.06,0.34,1.06,0x2c2018,0,4.03,0));
-  g.add(p(1.02,0.6,0.22,0x2c2018,0,3.55,-0.44));
+  const JEOGORI=0xf3ece0, HAIR=0x241a12, HEM=0x8a2f2e;   // 한복 여자 캐릭터
+  // 치마(A라인) — 고른 옷 색(player.shirt)이 치마
+  g.add(p(1.9,0.9,1.15,shirt,0,1.55,0));                 // 치마 윗단
+  g.add(p(2.5,1.0,1.5,shirt,0,0.85,0));                  // 치마 아랫단(넓게)
+  g.add(p(2.6,0.22,1.6,HEM,0,0.4,0));                    // 치마 밑단 띠
+  // 저고리 + 고름
+  g.add(p(1.5,1.0,0.9,JEOGORI,0,2.6,0));                 // 저고리 몸통
+  g.add(p(0.26,0.85,0.06,HEM,0.12,2.55,0.46));           // 고름(리본)
+  g.add(p(0.5,0.12,0.06,HEM,0.2,2.15,0.46));
+  // 머리(앞=+z 얼굴)
+  g.add(p(1.0,1.0,1.0,skin,0,3.6,0));                    // 얼굴
+  g.add(p(0.16,0.22,0.08,0x241a12,-0.23,3.68,0.5));      // 눈
+  g.add(p(0.16,0.22,0.08,0x241a12,0.23,3.68,0.5));
+  g.add(p(0.34,0.07,0.06,0x7a3b2e,0,3.34,0.5));          // 입
+  g.add(p(0.2,0.15,0.05,0xe58a8a,-0.34,3.42,0.47));      // 볼(발그레)
+  g.add(p(0.2,0.15,0.05,0xe58a8a,0.34,3.42,0.47));
+  g.add(p(1.12,0.42,1.12,HAIR,0,4.15,0));                // 머리 윗부분
+  g.add(p(1.14,1.0,0.35,HAIR,0,3.6,-0.46));              // 뒤통수
+  g.add(p(0.28,1.2,0.22,HAIR,-0.56,3.3,0.12));           // 옆머리(얼굴 옆)
+  g.add(p(0.28,1.2,0.22,HAIR,0.56,3.3,0.12));
+  g.add(p(0.34,2.0,0.34,HAIR,0,2.6,-0.56));              // 긴 머리(등 뒤로)
+  g.add(p(0.5,0.3,0.5,HEM,0,1.6,-0.62));                 // 댕기(머리끈)
+  // 다리(버선) + 팔(저고리 소매)
   const mk=(x,y)=>{const grp=new THREE.Group();grp.position.set(x,y,0);return grp;};
-  const legL=mk(-0.35,1.4),legR=mk(0.35,1.4),armL=mk(-0.95,2.9),armR=mk(0.95,2.9);
-  legL.add(p(0.5,1.4,0.6,0x2f2f3a,0,-0.7,0)); legR.add(p(0.5,1.4,0.6,0x2f2f3a,0,-0.7,0));
-  armL.add(p(0.4,1.3,0.5,skin,0,-0.65,0)); armR.add(p(0.4,1.3,0.5,skin,0,-0.65,0));
+  const legL=mk(-0.28,0.9),legR=mk(0.28,0.9),armL=mk(-0.9,2.9),armR=mk(0.9,2.9);
+  legL.add(p(0.38,0.9,0.5,0xf0ece6,0,-0.45,0)); legR.add(p(0.38,0.9,0.5,0xf0ece6,0,-0.45,0));
+  armL.add(p(0.38,1.3,0.5,JEOGORI,0,-0.65,0)); armR.add(p(0.38,1.3,0.5,JEOGORI,0,-0.65,0));
   g.add(legL,legR,armL,armR);
-  const tag=textSprite(name); tag.scale.set(1.15,0.43,1); tag.position.set(0,4.75,0); g.add(tag);
+  const tag=textSprite(name); tag.scale.set(1.15,0.43,1); tag.position.set(0,4.95,0); g.add(tag);
   g.userData={legL,legR,armL,armR,tag};
   return g;
 }
