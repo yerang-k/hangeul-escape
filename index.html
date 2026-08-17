@@ -186,6 +186,8 @@
 <script>
 /* ===================== 선생님 설정 ===================== */
 const CONFIG = {
+  // ▼ 완주 기록을 선생님 스프레드시트에 자동 저장. 아래 GAS 웹앱 URL을 붙여넣으면 켜짐(비우면 사용 안 함).
+  SHEET_URL: "",    // 예: "https://script.google.com/macros/s/AKfycb.../exec"
   FORM_URL: "",     // 구글폼 사전채우기 링크(.../viewform). 비우면 완주코드만 표시.
   ENTRY_CODE: "",   // 완주코드 칸 entry 번호 (예: "entry.1234567")
   // ▼ 멀티플레이(서로의 캐릭터가 보임). 비우면 자동 1인용. Firebase 프로젝트 설정값 붙여넣기.
@@ -802,7 +804,7 @@ initNet();
 let camYaw=Math.PI; const camTmp=new THREE.Vector3();
 camera.position.set(hero.position.x,4.4,hero.position.z+6.5);
 
-const clock=new THREE.Clock(); let phase=0; const SPEED=8;
+const clock=new THREE.Clock(); let phase=0; const SPEED=5.5;
 function animate(){
   requestAnimationFrame(animate);
   const dt=Math.min(clock.getDelta(),0.05);
@@ -951,10 +953,28 @@ function finishRoom(){ if(progress.room>=ROOMS.length-1)win(); else window.__adv
 function makeCode(){const d=new Date(),p=n=>String(n).padStart(2,'0');
   const rnd=Array.from({length:2},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'[Math.floor(Math.random()*32)]).join('');
   return `HG-${String(d.getFullYear()).slice(2)}${p(d.getMonth()+1)}${p(d.getDate())}-${p(d.getHours())}${p(d.getMinutes())}-${rnd}`;}
+function submitSheet(code){
+  const sid=($('#sid').value||'').trim(), nm=($('#snm').value||'').trim();
+  const msg=$('#sheetMsg');
+  if(!sid||!nm){ msg.style.color='var(--no)'; msg.textContent='학번과 이름을 모두 입력하세요.'; return; }
+  const btn=$('#sheetBtn'); btn.disabled=true; btn.textContent='제출 중…'; msg.style.color='var(--ink-dim)'; msg.textContent='';
+  fetch(CONFIG.SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
+    body:JSON.stringify({studentId:sid,name:nm,code:code,time:new Date().toISOString()})})
+   .then(()=>{ msg.style.color='var(--ok)'; msg.innerHTML='✅ 저장되었습니다. 이 화면을 선생님께 보여주세요.'; btn.textContent='제출 완료'; })
+   .catch(()=>{ msg.style.color='var(--no)'; msg.textContent='전송 실패 — 인터넷을 확인하고 다시 시도하세요.'; btn.disabled=false; btn.textContent='📋 스프레드시트에 제출'; });
+}
 function win(){const code=makeCode();
   $('#wintext').innerHTML=`네 개의 방을 모두 빠져나왔다!<br>1443 창제 · 1446 반포 · 1997 세계유산 등재 · 10월 9일 한글날.<br><b>${player.name}</b>, 너는 훈민정음의 길을 완주했다.`;
   $('#wincode').textContent=code;$('#wintime').textContent=new Date().toLocaleString('ko-KR')+' 완주';
-  if(CONFIG.FORM_URL&&CONFIG.ENTRY_CODE){const url=`${CONFIG.FORM_URL}?usp=pp_url&${CONFIG.ENTRY_CODE}=${encodeURIComponent(code)}`;
+  const inpS="flex:1;min-width:0;font:inherit;font-size:1rem;color:var(--ink);background:#1d150c;border:1px solid #4a381f;border-radius:10px;padding:10px 12px";
+  if(CONFIG.SHEET_URL){
+    $('#winsubmit').innerHTML=`<div style="display:flex;gap:8px;margin-bottom:8px">
+        <input id="sid" placeholder="학번" style="${inpS}" autocomplete="off" inputmode="numeric">
+        <input id="snm" placeholder="이름" value="${esc(player.name||'')}" style="${inpS}" autocomplete="off"></div>
+      <button class="btn" id="sheetBtn" style="width:100%">📋 스프레드시트에 제출</button>
+      <div class="fine" id="sheetMsg"></div>`;
+    $('#sheetBtn').onclick=()=>submitSheet(code);
+  } else if(CONFIG.FORM_URL&&CONFIG.ENTRY_CODE){const url=`${CONFIG.FORM_URL}?usp=pp_url&${CONFIG.ENTRY_CODE}=${encodeURIComponent(code)}`;
     $('#winsubmit').innerHTML=`<a class="btn" href="${url}" target="_blank" rel="noopener">🎁 선물 신청하기 (제출)</a>`;}
   else $('#winsubmit').innerHTML=`<div class="fine">완주 코드를 선생님께 보여주고 선물을 받으세요.</div>`;
   $('#win').style.display='flex';
