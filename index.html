@@ -496,7 +496,36 @@ Object.assign(sun.shadow.camera,{left:-26,right:26,top:26,bottom:-26,near:1,far:
 scene.add(sun);
 
 const ROOM=16, WH=9;
-const mat=(c,r=0.95)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:0});
+/* ---- 캔버스 무늬(텍스처): 외부 이미지 없이 한글날 무늬를 그려 입힘 ---- */
+function hx(c){return '#'+(c>>>0).toString(16).padStart(6,'0');}
+function makeTex(draw,size){size=size||256;const cv=document.createElement('canvas');cv.width=cv.height=size;
+  const cx=cv.getContext('2d');draw(cx,size);const tx=new THREE.CanvasTexture(cv);
+  tx.wrapS=tx.wrapT=THREE.RepeatWrapping;tx.anisotropy=4;return tx;}
+// 은은한 나뭇결(회색조) — material의 color가 실제 색을 입힌다. 방 전환에도 유지(__keep)
+const GRAIN=makeTex((cx,s)=>{cx.fillStyle='#fff';cx.fillRect(0,0,s,s);
+  cx.strokeStyle='rgba(0,0,0,0.05)';cx.lineWidth=1;
+  for(let i=0;i<70;i++){const y=Math.random()*s;cx.beginPath();cx.moveTo(0,y);
+    for(let x=0;x<=s;x+=14)cx.lineTo(x,y+Math.sin((x+i*23)*0.04)*3);cx.stroke();}});
+GRAIN.__keep=true;
+// 벽지: 한글 자모 + 격자무늬
+function wallTex(base){return makeTex((cx,s)=>{
+  cx.fillStyle=hx(base);cx.fillRect(0,0,s,s);
+  cx.strokeStyle='rgba(0,0,0,0.10)';cx.lineWidth=2;
+  for(let i=0;i<=4;i++){const p=i*s/4;cx.beginPath();cx.moveTo(p,0);cx.lineTo(p,s);cx.moveTo(0,p);cx.lineTo(s,p);cx.stroke();}
+  const g=['ㄱ','ㄴ','ㄷ','ㅁ','ㅅ','ㅇ','ㅈ','ㅎ','ㅏ','ㅗ','ㅜ','ㅣ','ㅂ','ㅌ','ㅍ','ㄹ'];
+  cx.fillStyle='rgba(255,255,255,0.13)';cx.font='bold 30px "Noto Serif KR",serif';cx.textAlign='center';cx.textBaseline='middle';
+  let k=0;for(let r=0;r<4;r++)for(let c=0;c<4;c++)cx.fillText(g[(k++)%g.length],c*s/4+s/8,r*s/4+s/8);
+},256);}
+// 마룻바닥: 널결
+function woodTex(base){return makeTex((cx,s)=>{
+  cx.fillStyle=hx(base);cx.fillRect(0,0,s,s);
+  cx.strokeStyle='rgba(0,0,0,0.20)';cx.lineWidth=3;
+  for(let y=0;y<=s;y+=s/4){cx.beginPath();cx.moveTo(0,y);cx.lineTo(s,y);cx.stroke();}
+  cx.strokeStyle='rgba(0,0,0,0.06)';cx.lineWidth=1;
+  for(let i=0;i<50;i++){const y=Math.random()*s;cx.beginPath();cx.moveTo(0,y);
+    for(let x=0;x<=s;x+=18)cx.lineTo(x,y+Math.sin((x+i*20)*0.03)*4);cx.stroke();}
+},256);}
+const mat=(c,r=0.95)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:0,map:GRAIN});
 function box(w,h,d,c,r){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat(c,r));m.castShadow=true;m.receiveShadow=true;return m;}
 function cyl(rt,rb,h,c){const m=new THREE.Mesh(new THREE.CylinderGeometry(rt,rb,h,14),mat(c));m.castShadow=true;m.receiveShadow=true;return m;}
 
@@ -673,18 +702,29 @@ window.__resolveBlocks=resolveBlocks; window.__curBlocks=()=>curBlocks;
 /* 가구·소품 충돌: 바닥 사각 영역을 curBlocks에 등록하면 캐릭터가 통과하지 못한다 */
 const FOOT={desk:[4,2.2],drawer:[2.7,1.9],jar:[2.2,2.2],chest:[3,2.2],lamp:[1.1,1.1]}; // 벽에 붙는 scroll·door는 제외
 function addBlock(x,z,w,d){ curBlocks.push({x:x,z:z,w:w,d:d}); }
-function clearGroup(gr){gr.traverse(o=>{if(o.isMesh){o.geometry.dispose();if(o.material.map)o.material.map.dispose();o.material.dispose();}});
+function clearGroup(gr){gr.traverse(o=>{if(o.isMesh){o.geometry.dispose();if(o.material.map&&!o.material.map.__keep)o.material.map.dispose();o.material.dispose();}});
   while(gr.children.length)gr.remove(gr.children[0]);}
 function buildRoom(i){
   clearGroup(roomGroup);
   const R=ROOMS[i], t=R.theme;
   scene.background=new THREE.Color(t.bg); scene.fog=new THREE.Fog(t.fog,30,58);
-  const floor=box(ROOM*2,1,ROOM*2,t.floor);floor.position.y=-0.5;roomGroup.add(floor);
+  const floorTx=woodTex(t.floor);floorTx.repeat.set(8,8);
+  const floor=new THREE.Mesh(new THREE.BoxGeometry(ROOM*2,1,ROOM*2),new THREE.MeshStandardMaterial({color:0xffffff,roughness:1,map:floorTx}));
+  floor.position.y=-0.5;floor.receiveShadow=true;roomGroup.add(floor);
   for(let z=-ROOM+2;z<ROOM;z+=4){const s=box(ROOM*2,0.06,0.22,0x00000033);s.position.set(0,0.03,z);roomGroup.add(s);}
   const rug=box(11,0.08,11,t.accent);rug.position.set(0,0.05,4);rug.material.transparent=true;rug.material.opacity=0.85;roomGroup.add(rug);
-  const wall=(x,z,w,rot)=>{const wl=box(w,WH,0.6,t.wall);wl.position.set(x,WH/2,z);wl.rotation.y=rot;roomGroup.add(wl);};
+  const wallTx=wallTex(t.wall);wallTx.repeat.set(6,2);
+  const wallMat=new THREE.MeshStandardMaterial({color:0xffffff,roughness:1,map:wallTx});
+  const wall=(x,z,w,rot)=>{const wl=new THREE.Mesh(new THREE.BoxGeometry(w,WH,0.6),wallMat);wl.position.set(x,WH/2,z);wl.rotation.y=rot;wl.castShadow=true;wl.receiveShadow=true;roomGroup.add(wl);};
   wall(0,-ROOM,ROOM*2,0);wall(0,ROOM,ROOM*2,0);wall(-ROOM,0,ROOM*2,Math.PI/2);wall(ROOM,0,ROOM*2,Math.PI/2);
-  const plq=box(6,1.6,0.2,0x00000055);plq.position.set(0,7,-ROOM+0.9);roomGroup.add(plq);
+  // 단청 느낌의 처마 색 띠
+  [[0,-ROOM+0.35,ROOM*2,0],[0,ROOM-0.35,ROOM*2,0],[-ROOM+0.35,0,ROOM*2,Math.PI/2],[ROOM-0.35,0,ROOM*2,Math.PI/2]].forEach(([x,z,w,rot])=>{
+    const tr=box(w,0.7,0.5,t.accent);tr.position.set(x,WH-0.9,z);tr.rotation.y=rot;roomGroup.add(tr);});
+  // 현판(訓民正音)
+  const pcv=document.createElement('canvas');pcv.width=480;pcv.height=128;const pctx=pcv.getContext('2d');
+  pctx.fillStyle='#241a10';pctx.fillRect(0,0,480,128);pctx.fillStyle='#e0b357';pctx.font='bold 66px serif';pctx.textAlign='center';pctx.textBaseline='middle';pctx.fillText('訓 民 正 音',240,72);
+  const plq=new THREE.Mesh(new THREE.BoxGeometry(6,1.6,0.25),new THREE.MeshStandardMaterial({color:0xffffff,roughness:1,map:new THREE.CanvasTexture(pcv),emissive:0x2a1c08,emissiveIntensity:0.25}));
+  plq.position.set(0,7.1,-ROOM+0.95);roomGroup.add(plq);
   // 내부 구조물(기둥·모서리 벽) + 충돌 영역 (decorate·가구가 이 뒤에서 영역을 추가)
   curBlocks=roomBlocks(i);
   curBlocks.forEach(b=>{
