@@ -284,7 +284,7 @@ const ROOMS = [
       {id:'l1',build:'lamp',x:-11,z:5,color:0xe0b357,name:'등잔',k:'등불의 글귀',
         q:"불을 붙이자 벽에 글귀가 드러난다.\n\n“이 방은 훈민정음이 창제된 것을 기린다.\n네가 찾아낸 네 숫자를 천·백·십·일 순서로 금고에 넣어라.”",
         type:'info',hint:"각 문제에서 얻은 네 숫자를 순서대로.",reward:null},
-      {id:'npc1',build:'npc',x:-3,z:6,color:0x2f5d8a,name:'집현전 학사',k:'대화',type:'info',
+      {id:'npc1',build:'npc',x:0,z:4,color:0x2f5d8a,name:'집현전 학사',k:'대화',type:'info',
         q:"나는 집현전 학사일세. 이 방은 세종께서 새 글자를 지으신 곳이지.\n\n가구를 하나하나 살펴 금고의 네 숫자를 모으게.\n잠긴 궤는 다른 데서 얻은 물건이 있어야 열린다네.",reward:null},
       {id:'door1',build:'door',x:0,z:15.2,color:0x53381f,name:'금고문',k:'제1 관문',type:'safe',lock:'🗝️ 서고 열쇠',reward:null}
     ]},
@@ -320,7 +320,7 @@ const ROOMS = [
       {id:'l2',build:'lamp',x:3,z:-10,color:0x8fd0ff,name:'등불',k:'등불의 글귀',
         q:"벽에 글귀가 드러난다.\n\n“이 방은 훈민정음이 반포된 것을 기린다.\n네가 찾아낸 네 숫자를 천·백·십·일 순서로 금고에 넣어라.”",
         type:'info',hint:"각 문제에서 얻은 네 숫자를 순서대로.",reward:null},
-      {id:'npc2',build:'npc',x:2,z:8,color:0x556677,name:'어문 규범관',k:'대화',type:'info',
+      {id:'npc2',build:'npc',x:0,z:4,color:0x556677,name:'어문 규범관',k:'대화',type:'info',
         q:"어문 규범관일세. 여기선 바른 말과 표기를 가린다네.\n\n항아리에서 ‘교정 도장’을 얻으면,\n봉인된 서류함이 열릴 걸세.",reward:null},
       {id:'door2',build:'door',x:0,z:15.2,color:0x2f3d49,name:'금고문',k:'제2 관문',type:'safe',lock:'🗝️ 검사실 열쇠',reward:null}
     ]},
@@ -356,7 +356,7 @@ const ROOMS = [
       {id:'l3',build:'lamp',x:1,z:-1,color:0xe0b357,name:'등룡',k:'등불의 글귀',
         q:"벽에 마지막 글귀.\n\n“이 방은 훈민정음이 유네스코 세계기록유산에\n오른 것을 기린다.\n네 숫자를 천·백·십·일 순서로 금고에 넣어라.”",
         type:'info',hint:"각 문제에서 얻은 네 숫자를 순서대로.",reward:null},
-      {id:'npc3',build:'npc',x:0,z:6,color:0x3a6a4a,name:'보물 지킴이',k:'대화',type:'info',
+      {id:'npc3',build:'npc',x:0,z:4,color:0x3a6a4a,name:'보물 지킴이',k:'대화',type:'info',
         q:"보물 지킴이라 하네. 옛말과 순우리말이 잠든 방이지.\n\n‘청동 열쇠’를 손에 넣어야\n잠긴 보물궤를 열 수 있다네.",reward:null},
       {id:'door3',build:'door',x:0,z:15.2,color:0x3a2a10,name:'금고문',k:'제3 관문',type:'safe',lock:'🗝️ 보고 열쇠',reward:null}
     ]},
@@ -392,7 +392,7 @@ const ROOMS = [
       {id:'l4',build:'lamp',x:0,z:2,color:0xffd98a,name:'기념 등',k:'등불의 글귀',
         q:"벽에 마지막 글귀가 드러난다.\n\n“이 방은 온 겨레가 한글을 기리는 ‘한글날’의 방이다.\n네가 찾아낸 네 숫자를 천·백·십·일 순서로 금고에 넣어라.”",
         type:'info',hint:"각 문제에서 얻은 네 숫자를 순서대로.",reward:null},
-      {id:'npc4',build:'npc',x:0,z:9,color:0x8a3b3b,name:'한글 지킴이',k:'대화',type:'info',
+      {id:'npc4',build:'npc',x:0,z:4,color:0x8a3b3b,name:'한글 지킴이',k:'대화',type:'info',
         q:"한글 지킴이일세. 가갸날에서 시월 구일까지,\n한글날의 내력이 이 방에 있지.\n\n‘정인지 서문’을 얻어야\n봉인된 연대기가 열린다네.",reward:null},
       {id:'door4',build:'door',x:0,z:15.2,color:0x2a3550,name:'최후의 금고문',k:'최종 관문',type:'safe',lock:'🗝️ 반포문 열쇠',reward:null}
     ]}
@@ -806,7 +806,7 @@ function resolveBlocks(p){ const R=0.9;
 }
 window.__resolveBlocks=resolveBlocks; window.__curBlocks=()=>curBlocks;
 /* 가구·소품 충돌: 바닥 사각 영역을 curBlocks에 등록하면 캐릭터가 통과하지 못한다 */
-const FOOT={desk:[4,2.2],drawer:[2.7,1.9],jar:[2.2,2.2],chest:[3,2.2],lamp:[1.1,1.1]}; // 벽에 붙는 scroll·door는 제외
+const FOOT={desk:[4,2.2],drawer:[2.7,1.9],jar:[2.2,2.2],chest:[3,2.2],lamp:[1.1,1.1],npc:[1.4,1.5]}; // 벽에 붙는 scroll·door는 제외
 function addBlock(x,z,w,d){ curBlocks.push({x:x,z:z,w:w,d:d}); }
 function clearGroup(gr){gr.traverse(o=>{if(o.isMesh){o.geometry.dispose();if(o.material.map&&!o.material.map.__keep)o.material.map.dispose();o.material.dispose();}});
   while(gr.children.length)gr.remove(gr.children[0]);}
@@ -844,7 +844,7 @@ function buildRoom(i){
   R.stations.forEach(st=>{
     const g = st.build==='npc' ? buildNPC(st.color) : furniture(st.build,st.color);
     let z=st.z; if(st.build==='scroll')z=-ROOM+0.9; if(st.build==='door')z=ROOM-0.4;
-    if(st.build==='npc') g.rotation.y=Math.PI;   // 방 안쪽(플레이어)을 바라보게
+    if(st.build==='npc') g.rotation.y=0;   // 플레이어(시작 지점 쪽)를 바라보게
     g.position.set(st.x,0,z); g.userData.stationId=st.id; roomGroup.add(g); st.group=g; st._z=z;
     if(FOOT[st.build]) addBlock(st.x,z,FOOT[st.build][0],FOOT[st.build][1]);
     if(st.build==='door'){                                  // 문 위 '다음 방으로' 표지
@@ -1073,7 +1073,7 @@ function startChat(st){ S.paused=true; chatStation=st; chatSolved=false; chatBub
   drawChat(); $('#overlay').style.display='flex'; }
 function openInfo(st){ startChat(st); }
 function openPuzzle(st){ startChat(st); }
-window.finishInfo=id=>{markDone(id);closeOverlay();};
+window.finishInfo=id=>{const st=stById(id); if(!st||st.build!=='npc')markDone(id); closeOverlay();}; // NPC는 done 처리 안 함 → 여러 번 대화
 window.npcHint=()=>{ chatBubbles.push({c:'npc',t:'💡 '+(chatStation.hint||'…')}); drawChat(); };
 function winReply(st){ chatSolved=true; chatBubbles.push({c:'npc',t:'철컥 — 훌륭하다! '+rewardText(st)}); applyReward(st); drawChat(); markDone(st.id); }
 window.tryChoice=(id,k)=>{const st=stById(id); if(chatSolved)return;
