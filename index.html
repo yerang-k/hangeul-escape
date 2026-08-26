@@ -1233,7 +1233,7 @@ function openInfo(st){ startChat(st); }
 function openPuzzle(st){ startChat(st); }
 window.finishInfo=id=>{const st=stById(id); if(!st||st.build!=='npc')markDone(id); closeOverlay();}; // NPC는 done 처리 안 함 → 여러 번 대화
 window.npcHint=()=>{ chatBubbles.push({c:'npc',t:'💡 '+(chatStation.hint||'…')}); drawChat(); };
-function winReply(st){ chatSolved=true; chatBubbles.push({c:'npc',t:'철컥 — 훌륭하다! '+rewardText(st)}); applyReward(st); drawChat(); markDone(st.id); }
+function winReply(st){ chatSolved=true; chatBubbles.push({c:'npc',t:'철컥 — 훌륭하다! '+rewardText(st)}); applyReward(st); drawChat(); markDone(st.id); saveGame(); }
 window.tryChoice=(id,k)=>{const st=stById(id); if(chatSolved)return;
   chatBubbles.push({c:'me',t:st.opts[k]});
   if(k===st.answer) winReply(st);
