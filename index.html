@@ -1072,6 +1072,9 @@ function animate(){
       }
     });
   }
+  if($('#overlay').style.display !== 'flex' && $('#win').style.display !== 'flex'){
+    S.paused = false;
+  }
   let ix=Math.max(-1,Math.min(1,input.x+((keys['d']||keys['arrowright'])?1:0)-((keys['a']||keys['arrowleft'])?1:0)));
   let iy=Math.max(-1,Math.min(1,input.y+((keys['s']||keys['arrowdown'])?1:0)-((keys['w']||keys['arrowup'])?1:0)));
   let moving=false;
