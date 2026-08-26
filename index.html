@@ -944,9 +944,7 @@ function buildRoom(i, isResume){
     hero.position.set(0,0,7); hero.rotation.y=Math.PI;
   } else {
     S.paused=false;
-    const rx = (typeof S.resumeX === 'number' && isFinite(S.resumeX) && Math.abs(S.resumeX) < ROOM) ? S.resumeX : 0;
-    const rz = (typeof S.resumeZ === 'number' && isFinite(S.resumeZ) && Math.abs(S.resumeZ) < ROOM) ? S.resumeZ : 7;
-    hero.position.set(rx,0,rz); hero.rotation.y=Math.PI;
+    hero.position.set(0,0,7); hero.rotation.y=Math.PI;
   }
   renderHUD();
   saveGame();
