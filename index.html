@@ -1101,40 +1101,7 @@ function animate(){
     const dist=5.6, camH=3.7, look=9, lookH=2.4;
     camTmp.set(hero.position.x-fx*dist, camH, hero.position.z-fz*dist);
     const cl=ROOM-0.8; camTmp.x=Math.max(-cl,Math.min(cl,camTmp.x)); camTmp.z=Math.max(-cl,Math.min(cl,camTmp.z)); // 카메라를 방 안에 가둠(벽 밖으로 안 나가게)
-    
-    // 캐릭터 머리 높이 근처에서 카메라 목표점 방향으로 레이캐스트
-    const characterCenter = new THREE.Vector3(hero.position.x, 2.0, hero.position.z);
-    const camDir = new THREE.Vector3().subVectors(camTmp, characterCenter);
-    const maxDist = camDir.length();
-    camDir.normalize();
-    
-    const camRay = new THREE.Raycaster(characterCenter, camDir, 0.1, maxDist);
-    const intersects = camRay.intersectObjects(roomGroup.children, true);
-    
-    let finalCamPos = camTmp.clone();
-    let nearestHitDist = maxDist;
-    for(const hit of intersects){
-      let o = hit.object;
-      if(o.isPoints) continue;
-      if(o.position && o.position.y < 0) continue;
-      let currentObj = o;
-      let skip = false;
-      while(currentObj){
-        if(currentObj.userData && (currentObj.userData.stationId === 'npc' || currentObj.userData.stationId === 'door' || currentObj.name === 'sign' || currentObj.isSprite)){
-          skip = true;
-          break;
-        }
-        currentObj = currentObj.parent;
-      }
-      if(skip) continue;
-      if(hit.distance < nearestHitDist){
-        nearestHitDist = hit.distance;
-      }
-    }
-    if(nearestHitDist < maxDist){
-      const safeDist = Math.max(1.5, nearestHitDist - 0.5);
-      finalCamPos.copy(characterCenter).addScaledVector(camDir, safeDist);
-    }
+    let finalCamPos = camTmp;
     
     camera.position.lerp(finalCamPos,Math.min(1,dt*8));
     camera.lookAt(hero.position.x+fx*look, lookH, hero.position.z+fz*look); }
