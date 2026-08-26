@@ -2,6 +2,12 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<script>
+window.onerror = function(msg, url, line, col, error) {
+  alert("🚨 런타임 에러 감지!\n\n메시지: " + msg + "\n위치: " + line + "라인 " + col + "열\n에러: " + (error ? error.stack : ''));
+  return false;
+};
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>세종의 밀실 3D — 훈민정음 대탈출</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
