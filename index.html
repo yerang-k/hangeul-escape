@@ -569,8 +569,8 @@ const stById=id=>CUR().stations.find(s=>s.id===id);
         btn.style.display = 'block';
         btn.onclick = () => {
           try {
-            player.name = saved.playerName;
-            player.shirt = saved.playerShirt;
+            player.name = saved.playerName || '탐험가';
+            player.shirt = (typeof saved.playerShirt === 'number' && isFinite(saved.playerShirt)) ? saved.playerShirt : SHIRTS[0];
             progress.room = saved.room || 0;
             S.done = (saved.done && typeof saved.done === 'object' && !Array.isArray(saved.done)) ? saved.done : {};
             S.digits = Array.isArray(saved.digits) ? saved.digits : ['?','?','?','?'];
@@ -964,7 +964,10 @@ buildRoom(progress.room, isResume);
 
 /* 입력 */
 const input={x:0,y:0};
-(function joystick(){const base=$('#stick'),knob=$('#knob');let id=null,cx,cy;const Rr=48;
+(function joystick(){const base=$('#stick'),knob=$('#knob');
+  base.style.pointerEvents = 'auto';
+  base.style.zIndex = '9999';
+  let id=null,cx,cy;const Rr=48;
   const set=(dx,dy)=>{let l=Math.hypot(dx,dy);if(l>Rr){dx=dx/l*Rr;dy=dy/l*Rr;l=Rr;}
     knob.style.transform=`translate(${dx}px,${dy}px)`;               // 노브는 손가락 따라 그대로
     const DEAD=0.16; let m=Math.max(0,(l/Rr-DEAD)/(1-DEAD)); m=m*m; // 데드존 + 제곱 곡선(둔감화)
@@ -1137,9 +1140,13 @@ function animate(){
   renderer.render(scene,camera);
 }
 animate();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
-$('#loading').style.display='none';
-window.__hero=hero;
+  const stNode = $('#stick'), actNode = $('#act'), hudNode = $('#hud');
+  if(stNode) document.body.appendChild(stNode);
+  if(actNode) document.body.appendChild(actNode);
+  if(hudNode) document.body.appendChild(hudNode);
+  addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);});
+  $('#loading').style.display='none';
+  window.__hero=hero;
 } /* end start3D */
 
 /* ==================== 퍼즐/금고/승리 (DOM) ==================== */
