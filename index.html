@@ -577,8 +577,8 @@ const stById=id=>CUR().stations.find(s=>s.id===id);
           S.startTime = saved.startTime || Date.now();
           S.wrongCounts = saved.wrongCounts || {};
           S.paused = false;
-          S.resumeX = saved.heroX !== undefined ? saved.heroX : 0;
-          S.resumeZ = saved.heroZ !== undefined ? saved.heroZ : 7;
+          S.resumeX = (saved.heroX !== undefined && isFinite(saved.heroX)) ? saved.heroX : 0;
+          S.resumeZ = (saved.heroZ !== undefined && isFinite(saved.heroZ)) ? saved.heroZ : 7;
           
           personalize();
           renderHUD();
@@ -944,8 +944,8 @@ function buildRoom(i, isResume){
     hero.position.set(0,0,7); hero.rotation.y=Math.PI;
   } else {
     S.paused=false;
-    const rx = S.resumeX !== undefined ? S.resumeX : 0;
-    const rz = S.resumeZ !== undefined ? S.resumeZ : 7;
+    const rx = (typeof S.resumeX === 'number' && isFinite(S.resumeX) && Math.abs(S.resumeX) < ROOM) ? S.resumeX : 0;
+    const rz = (typeof S.resumeZ === 'number' && isFinite(S.resumeZ) && Math.abs(S.resumeZ) < ROOM) ? S.resumeZ : 7;
     hero.position.set(rx,0,rz); hero.rotation.y=Math.PI;
   }
   renderHUD();
