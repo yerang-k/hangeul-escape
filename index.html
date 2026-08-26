@@ -568,30 +568,34 @@ const stById=id=>CUR().stations.find(s=>s.id===id);
         const btn = $('#resumeBtn');
         btn.style.display = 'block';
         btn.onclick = () => {
-          player.name = saved.playerName;
-          player.shirt = saved.playerShirt;
-          progress.room = saved.room || 0;
-          S.done = saved.done || {};
-          S.digits = saved.digits || ['?','?','?','?'];
-          S.items = saved.items || [];
-          S.startTime = saved.startTime || Date.now();
-          S.wrongCounts = saved.wrongCounts || {};
-          S.paused = false;
-          S.resumeX = (saved.heroX !== undefined && isFinite(saved.heroX)) ? saved.heroX : 0;
-          S.resumeZ = (saved.heroZ !== undefined && isFinite(saved.heroZ)) ? saved.heroZ : 7;
-          
-          personalize();
-          renderHUD();
-          $('#setup').style.display='none';
-          $('#intro').style.display='none';
-          if(typeof THREE!=='undefined') {
-            start3D(false);
-            setTimeout(() => {
-              const hX = (typeof hero !== 'undefined' && hero) ? hero.position.x : '무';
-              const hZ = (typeof hero !== 'undefined' && hero) ? hero.position.z : '무';
-              alert(`[디버그] S.paused: ${S.paused}, heroX: ${hX}, heroZ: ${hZ}, room: ${progress.room}`);
-              S.paused = false;
-            }, 2000);
+          try {
+            player.name = saved.playerName;
+            player.shirt = saved.playerShirt;
+            progress.room = saved.room || 0;
+            S.done = (saved.done && typeof saved.done === 'object' && !Array.isArray(saved.done)) ? saved.done : {};
+            S.digits = Array.isArray(saved.digits) ? saved.digits : ['?','?','?','?'];
+            S.items = Array.isArray(saved.items) ? saved.items : [];
+            S.startTime = saved.startTime || Date.now();
+            S.wrongCounts = (saved.wrongCounts && typeof saved.wrongCounts === 'object') ? saved.wrongCounts : {};
+            S.paused = false;
+            S.resumeX = (saved.heroX !== undefined && isFinite(saved.heroX)) ? saved.heroX : 0;
+            S.resumeZ = (saved.heroZ !== undefined && isFinite(saved.heroZ)) ? saved.heroZ : 7;
+            
+            personalize();
+            renderHUD();
+            $('#setup').style.display='none';
+            $('#intro').style.display='none';
+            if(typeof THREE!=='undefined') {
+              start3D(false);
+              setTimeout(() => {
+                const hX = (typeof hero !== 'undefined' && hero) ? hero.position.x : '무';
+                const hZ = (typeof hero !== 'undefined' && hero) ? hero.position.z : '무';
+                alert(`[디버그] S.paused: ${S.paused}, heroX: ${hX}, heroZ: ${hZ}, room: ${progress.room}`);
+                S.paused = false;
+              }, 2000);
+            }
+          } catch(err) {
+            alert("🚨 이어서하기 클릭 시 런타임 오류 발생!\n\n에러: " + err.message + "\n스택: " + err.stack);
           }
         };
       }
