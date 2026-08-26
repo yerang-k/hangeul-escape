@@ -586,6 +586,12 @@ const stById=id=>CUR().stations.find(s=>s.id===id);
           $('#intro').style.display='none';
           if(typeof THREE!=='undefined') {
             start3D(false);
+            setTimeout(() => {
+              const hX = (typeof hero !== 'undefined' && hero) ? hero.position.x : '무';
+              const hZ = (typeof hero !== 'undefined' && hero) ? hero.position.z : '무';
+              alert(`[디버그] S.paused: ${S.paused}, heroX: ${hX}, heroZ: ${hZ}, room: ${progress.room}`);
+              S.paused = false;
+            }, 2000);
           }
         };
       }
