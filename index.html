@@ -1055,6 +1055,7 @@ function animate(){
   requestAnimationFrame(animate);
   const dt=Math.min(clock.getDelta(),0.05);
   starTime+=dt;
+  const lim=ROOM-1.4;
   if(typeof CUR==='function'&&CUR()){
     CUR().stations.forEach(st=>{
       if(st.star&&st.star.visible){
