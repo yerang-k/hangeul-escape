@@ -615,9 +615,9 @@ function renderHUD(){const L=['천','백','십','일'];
   $('#items').textContent=S.items.map(i=>i.split(' ')[0]).join('');}
 
 /* ==================== 3D 시작 ==================== */
-$('#startBtn').onclick=()=>{ personalize(); $('#intro').style.display='none'; if(typeof THREE!=='undefined') start3D(); };
+$('#startBtn').onclick=()=>{ personalize(); saveGame(); $('#intro').style.display='none'; if(typeof THREE!=='undefined') start3D(false); };
 
-function start3D(){
+function start3D(isResume){
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(62,innerWidth/innerHeight,0.1,300);
 const renderer=new THREE.WebGLRenderer({antialias:!IS_TOUCH, powerPreference:'high-performance'});
