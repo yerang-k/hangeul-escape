@@ -946,13 +946,10 @@ function buildRoom(i, isResume){
     if(Object.keys(S.done).length === 0 && S.digits.every(d => d === '?') && S.items.length === 0){
       S.done={}; S.digits=R.code.split('').map(()=>'?'); S.items=[]; S.paused=false;
       S.wrongCounts={};
-      hero.position.set(0,0,7); hero.rotation.y=Math.PI;
     } else {
       S.paused=false;
-      const rx = (typeof S.resumeX === 'number' && isFinite(S.resumeX) && Math.abs(S.resumeX) < ROOM) ? S.resumeX : 0;
-      const rz = (typeof S.resumeZ === 'number' && isFinite(S.resumeZ) && Math.abs(S.resumeZ) < ROOM) ? S.resumeZ : 7;
-      hero.position.set(rx,0,rz); hero.rotation.y=Math.PI;
     }
+    hero.position.set(0,0,7); hero.rotation.y=Math.PI;
   } else {
     S.paused=false;
     hero.position.set(0,0,7); hero.rotation.y=Math.PI;
