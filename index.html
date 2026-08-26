@@ -583,6 +583,7 @@ const stById=id=>CUR().stations.find(s=>s.id===id);
           personalize();
           renderHUD();
           $('#setup').style.display='none';
+          $('#intro').style.display='none';
           if(typeof THREE!=='undefined') {
             start3D(true);
           }
