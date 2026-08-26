@@ -2,12 +2,6 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<script>
-window.onerror = function(msg, url, line, col, error) {
-  alert("🚨 런타임 에러 감지!\n\n메시지: " + msg + "\n위치: " + line + "라인 " + col + "열\n에러: " + (error ? error.stack : ''));
-  return false;
-};
-</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>세종의 밀실 3D — 훈민정음 대탈출</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1271,7 +1265,7 @@ function submitSheet(code, duration){
   const btn=$('#sheetBtn'); btn.disabled=true; btn.textContent='제출 중…'; msg.style.color='var(--ink-dim)'; msg.textContent='';
   fetch(CONFIG.SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},
     body:JSON.stringify({studentId:sid,name:nm,code:code,time:new Date().toISOString(),duration:duration})})
-   .then(()=>{ msg.style.color='var(--ok)'; msg.innerHTML='✅ 저장되었습니다. 이 화면을 선생님께 보여주세요.'; btn.textContent='제출 완료'; })
+   .then(()=>{ msg.style.color='var(--ok)'; msg.innerHTML='✅ 저장되었습니다.'; btn.textContent='제출 완료'; })
    .catch(()=>{ msg.style.color='var(--no)'; msg.textContent='전송 실패 — 인터넷을 확인하고 다시 시도하세요.'; btn.disabled=false; btn.textContent='📋 제출'; });
 }
 function win(){
