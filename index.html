@@ -585,7 +585,7 @@ const stById=id=>CUR().stations.find(s=>s.id===id);
           $('#setup').style.display='none';
           $('#intro').style.display='none';
           if(typeof THREE!=='undefined') {
-            start3D(true);
+            start3D(false);
           }
         };
       }
@@ -939,9 +939,16 @@ function buildRoom(i, isResume){
     const pm=new THREE.PointsMaterial({color:t.accent,size:0.13,transparent:true,opacity:0.55,depthWrite:false});
     dustField=new THREE.Points(geo,pm); roomGroup.add(dustField); }
   if(!isResume){
-    S.done={}; S.digits=R.code.split('').map(()=>'?'); S.items=[]; S.paused=false;
-    S.wrongCounts={};
-    hero.position.set(0,0,7); hero.rotation.y=Math.PI;
+    if(Object.keys(S.done).length === 0 && S.digits.every(d => d === '?') && S.items.length === 0){
+      S.done={}; S.digits=R.code.split('').map(()=>'?'); S.items=[]; S.paused=false;
+      S.wrongCounts={};
+      hero.position.set(0,0,7); hero.rotation.y=Math.PI;
+    } else {
+      S.paused=false;
+      const rx = (typeof S.resumeX === 'number' && isFinite(S.resumeX) && Math.abs(S.resumeX) < ROOM) ? S.resumeX : 0;
+      const rz = (typeof S.resumeZ === 'number' && isFinite(S.resumeZ) && Math.abs(S.resumeZ) < ROOM) ? S.resumeZ : 7;
+      hero.position.set(rx,0,rz); hero.rotation.y=Math.PI;
+    }
   } else {
     S.paused=false;
     hero.position.set(0,0,7); hero.rotation.y=Math.PI;
