@@ -1123,21 +1123,28 @@ function animate(){
     const intersects = camRay.intersectObjects(roomGroup.children, true);
     
     let finalCamPos = camTmp.clone();
-    if(intersects.length > 0){
-      const hit = intersects[0];
-      let currentObj = hit.object;
-      let isInvalid = false;
+    let nearestHitDist = maxDist;
+    for(const hit of intersects){
+      let o = hit.object;
+      if(o.isPoints) continue;
+      if(o.position && o.position.y < 0) continue;
+      let currentObj = o;
+      let skip = false;
       while(currentObj){
-        if(currentObj.userData && (currentObj.userData.stationId === 'npc' || currentObj.name === 'sign' || currentObj.isSprite)){
-          isInvalid = true;
+        if(currentObj.userData && (currentObj.userData.stationId === 'npc' || currentObj.userData.stationId === 'door' || currentObj.name === 'sign' || currentObj.isSprite)){
+          skip = true;
           break;
         }
         currentObj = currentObj.parent;
       }
-      if(!isInvalid && hit.distance < maxDist){
-        const safeDist = Math.max(1.0, hit.distance - 0.4);
-        finalCamPos.copy(characterCenter).addScaledVector(camDir, safeDist);
+      if(skip) continue;
+      if(hit.distance < nearestHitDist){
+        nearestHitDist = hit.distance;
       }
+    }
+    if(nearestHitDist < maxDist){
+      const safeDist = Math.max(1.5, nearestHitDist - 0.5);
+      finalCamPos.copy(characterCenter).addScaledVector(camDir, safeDist);
     }
     
     camera.position.lerp(finalCamPos,Math.min(1,dt*8));
