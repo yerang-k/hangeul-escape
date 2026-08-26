@@ -403,25 +403,9 @@ const STAR_HEIGHTS = {
   scroll: 4.8
 };
 function buildStar(){
-  const g=new THREE.Group();
-  const shape=new THREE.Shape();
-  const pts=5, R=0.6, r=0.25;
-  for(let i=0;i<pts*2;i++){
-    const a=Math.PI/pts*i;
-    const currR=(i%2===0)?R:r;
-    const px=Math.sin(a)*currR;
-    const py=Math.cos(a)*currR;
-    if(i===0)shape.moveTo(px,py);else shape.lineTo(px,py);
-  }
-  shape.closePath();
-  const ext=new THREE.ExtrudeGeometry(shape,{depth:0.18,bevelEnabled:true,bevelSegments:3,steps:1,bevelSize:0.04,bevelThickness:0.04});
-  ext.center();
-  const mat=new THREE.MeshStandardMaterial({color:0xffd700,emissive:0xffa500,emissiveIntensity:0.6,roughness:0.3,metalness:0.8});
-  const m=new THREE.Mesh(ext,mat);
-  m.rotation.x=Math.PI/2;
-  m.castShadow=true;
-  g.add(m);
-  return g;
+  const sign = textSprite('⭐', '#ffd700');
+  sign.scale.set(1.4, 1.4, 1);
+  return sign;
 }
 
 /* ===== 개인화(부정공유 방지) : 이름 씨앗으로 학생마다 다른 코드 + 무작위 출제 ===== */
@@ -1061,13 +1045,16 @@ function animate(){
       if(st.star&&st.star.visible){
         st.star.rotation.y+=dt*1.5;
         const pulse=Math.sin(starTime*4)*0.12+0.88;
-        st.star.scale.set(pulse,pulse,pulse);
-        if(st.star.material)st.star.material.emissiveIntensity=0.5+Math.sin(starTime*6)*0.3;
+        st.star.scale.set(pulse*1.4,pulse*1.4,1);
+        const h=STAR_HEIGHTS[st.build]||3.0;
+        st.star.position.y=h+Math.sin(starTime*3.5)*0.12;
       }
       if(st.lockIcon&&st.lockIcon.visible){
         st.lockIcon.rotation.y+=dt*1.2;
         const pulse=Math.sin(starTime*3.5)*0.08+0.92;
         st.lockIcon.scale.set(pulse*1.4,pulse*1.4,1);
+        const h=STAR_HEIGHTS[st.build]||3.0;
+        st.lockIcon.position.y=h+Math.sin(starTime*3.0)*0.1;
       }
     });
   }
